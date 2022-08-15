@@ -33,6 +33,11 @@ variable "attach_cloudwatch_logs_policy" {
   type        = bool
   default     = true
 }
+variable "use_existing_cloudwatch_log_group" {
+  description = "Whether to use an existing CloudWatch log group or create new"
+  type        = bool
+  default     = false
+}
 
 variable "authorization_type" {
   description = "The type of authentication that the Lambda Function URL uses. Set to 'AWS_IAM' to restrict access to authenticated IAM users only. Set to 'NONE' to bypass IAM authentication and create a public endpoint."
@@ -40,7 +45,7 @@ variable "authorization_type" {
   default     = "AWS_IAM"
 }
 
-varible "create_lambda_function_url" {
+variable "create_lambda_function_url" {
   description = "Controls whether the Lambda Function URL resource should be created"
   type        = bool
   default     = true

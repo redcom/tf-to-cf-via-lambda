@@ -4,6 +4,18 @@ variable "create_lb" {
   default     = true
 }
 
+variable "target_groups" {
+  description = "A list of maps containing key/value pairs that define the target groups to be created. Order of these maps is important and the index of these are to be referenced in listener definitions. Required key/values: name, backend_protocol, backend_port"
+  type        = any
+  default = [{
+    name_prefix      = "pref-"
+    backend_protocol = "TCP"
+    backend_port     = 80
+    target_type      = "ip"
+    }
+  ]
+}
+
 variable "http_tcp_listeners" {
   description = "A list of maps describing the HTTP listeners or TCP ports for this ALB. Required key/values: port, protocol. Optional key/values: target_group_index (defaults to http_tcp_listeners[count.index])"
   type        = any

@@ -1,5 +1,5 @@
 module "this" {
-  source = "git://github.com:terraform-aws-modules/terraform-aws-lambda/lambda/aws?ref=v3.3.1"
+  source = "github.com/terraform-aws-modules/terraform-aws-lambda.git?ref=v3.3.1"
 
   create  = var.create_lambda
   publish = var.publish_lambda
@@ -9,7 +9,10 @@ module "this" {
   handler       = "index.terraformState"
   runtime       = "nodejs14.x"
 
-  create_role      = var.create_role
+  # prevent default role_creation for this lambda. Create role in iam.tf file
+  create_role = false
+  lambda_role = module.extract_terraform_state_exec_role.iam_role_arn
+
   role_name        = "lambda-export-terraform-state"
   role_description = "Lambda role to be used for viewing terrafrom state"
   role_tags        = var.role_tags
@@ -40,7 +43,7 @@ module "this" {
   }
 
   timeout     = 300
-  memory_size = 126
+  memory_size = 128
 
   tags = merge(
     {

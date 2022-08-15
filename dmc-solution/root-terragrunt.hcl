@@ -97,6 +97,15 @@ generate "provider_lock" {
 provider "registry.terraform.io/hashicorp/aws" {
   version = "4.22.0"
 }
+provider "registry.terraform.io/hashicorp/external" {
+  version = "2.2.2"
+}
+provider "registry.terraform.io/hashicorp/local" {
+  version = "2.2.3"
+}
+provider "registry.terraform.io/hashicorp/null" {
+  version = "3.1.1"
+}
 EOF
 }
 

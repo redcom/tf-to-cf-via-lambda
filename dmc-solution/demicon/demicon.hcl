@@ -7,7 +7,7 @@ locals {
   current_dir = get_terragrunt_dir()
 
   ## Availability zones and corresponding subnets
-  azs = ["us-east-1a", "us-east-1b"]
+  azs = ["eu-central-1a", "eu-central-1b"]
 
   tags = {
     Solution = "Demicon"
@@ -15,7 +15,7 @@ locals {
   }
 
   ## configuration variables to create a VPC
-  vpc = {
+  simple-vpc = {
     name             = "simple-vpc"
     create_vpc       = true
     cidr             = "192.1.0.0/16"
@@ -29,7 +29,7 @@ locals {
     database_subnet_tags = { Name = "net:sb:data" }
     igw_tags             = { Name = "net:igw:simple-vpc" }
     vpc_tags             = { Name = "simple-vpc" }
-    tags                 = merge(local.tags, vpc_tags)
+    tags                 = merge(local.tags, {})
   }
 
   ## configuration variables to create an ALB load balancer
@@ -37,18 +37,21 @@ locals {
     create_lb          = true
     name               = "simple-alb"
     load_balancer_type = "application"
-    subnets            = [] # this will be populated by the VPC module
     vpc_id             = "" # this will be populated by the VPC MODULE
-    security_groups    = [] # this will be populated by the VPC MODULE
 
-    lb_tags = { Name = "simple-alb" }
-    tags    = merge(local.tags, lb_tags)
+    lb_tags         = { Name = "simple-alb" }
+    tags            = merge(local.tags, {})
+    security_groups = [] # this will be populated by the VPC module
+    subnets         = [] # this will be populated by the VPC module
   }
 
   ## configuration variable to create lambda for exposing the terraform state
-  expose_terraform_state = {
+  expose-terraform-state = {
     create_lambda              = true
-    environment_variables      = {}
+    environment_variables      = {
+      bucket_name = "" # populated by global-vars.hcl
+      region = "" # popuated by global-vars.hcl
+    }
     authorization_type         = "AWS_IAM"
     create_lambda_function_url = true
 

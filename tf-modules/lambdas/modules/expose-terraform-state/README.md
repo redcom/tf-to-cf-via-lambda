@@ -17,7 +17,9 @@ The following submodule are available:
 
 ## Providers
 
-No providers.
+| Name | Version |
+|------|---------|
+| aws | >= 4.22.0 |
 
 ## Inputs
 
@@ -27,12 +29,14 @@ No providers.
 | attach\_network\_policy | Controls whether VPC/network policy should be added to IAM role for Lambda Function | `bool` | `true` | no |
 | authorization\_type | The type of authentication that the Lambda Function URL uses. Set to 'AWS\_IAM' to restrict access to authenticated IAM users only. Set to 'NONE' to bypass IAM authentication and create a public endpoint. | `string` | `"AWS_IAM"` | no |
 | create\_lambda | Condition to create the lambda function | `bool` | `true` | no |
+| create\_lambda\_function\_url | Controls whether the Lambda Function URL resource should be created | `bool` | `true` | no |
 | create\_role | Condition to publish the lambda function | `bool` | `true` | no |
 | environment\_variables | A map that defines environment variables for the Lambda Function. | `map(string)` | `{}` | no |
 | maximum\_retry\_attempts | Maximum number of times to retry when the function returns an error. Valid values between 0 and 2. Defaults to 2. | `number` | `0` | no |
 | publish\_lambda | Condition to publish the lambda function | `bool` | `true` | no |
 | role\_tags | A map of tags to assign to IAM role | `map(string)` | ```{ "Name": "lambda:role:extract-terraform-state" }``` | no |
 | tags | Tags for this lambda function | `map(string)` | `{}` | no |
+| use\_existing\_cloudwatch\_log\_group | Whether to use an existing CloudWatch log group or create new | `bool` | `false` | no |
 
 ## Outputs
 
@@ -42,16 +46,18 @@ No providers.
 | lambda\_cloudwatch\_log\_group\_name | The name of the Cloudwatch Log Group |
 | lambda\_environment\_variables | A map that defines environment variables for the Lambda Function. |
 | lambda\_function\_url | The URL of the Lambda Function URL |
-| role\_arn | The ARN of the Lambda Function |
-| role\_name | The name of the IAM role created for the Lambda Function |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| this | git://github.com:terraform-aws-modules/terraform-aws-lambda/lambda/aws | v3.3.1 |
+| extract\_terraform\_state\_exec\_role | github.com/terraform-aws-modules/terraform-aws-iam/modules/iam-assumable-role | n/a |
+| this | github.com/terraform-aws-modules/terraform-aws-lambda.git | v3.3.1 |
 
 ## Resources
 
-No resources.
+| Name | Type |
+|------|------|
+| [aws_iam_policy.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
+| [aws_iam_policy_document.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 <!-- END_TF_DOCS -->

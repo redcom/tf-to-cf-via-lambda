@@ -7,18 +7,19 @@ locals {
   ## Load variables from hierarchy
   global_modules = read_terragrunt_config(find_in_parent_folders("global-modules.hcl")).locals
 
-  ## load variables for this solution
-  demicon_vars = read_terragrunt_config(find_in_parent_folders("demicon.hcl")).locals
 
   # Set module name here, path and version are controlled by `global-modules.hcl`
   module_name = "alb"
+
+  ## load variables for this solution
+  demicon_vars = read_terragrunt_config(find_in_parent_folders("demicon.hcl")).locals[local.module_name]
 
   # Module loader code
   module_data     = local.global_modules.modules[local.module_name]
   module_is_local = try(local.module_data.local, false)
   module_path     = local.module_data.path
   module_basepath = local.global_modules.module_basepath_local
-  module_source   = "${local.module_basepath}/${local.module_path}?ref=${local.module_data.ref}"
+  module_source   = "${local.module_basepath}/${local.module_path}"
 }
 
 ## Terragrunt will copy the Terraform code specified by the source parameter, along with any files in the
@@ -38,16 +39,28 @@ terraform {
 dependency "vpc" {
   config_path = "../vpc"
   mock_outputs = {
-    "vpc_id" = "mock-default-1"
+    "vpc_id"                    = "mock-default-vpc-id"
+    "public_subnets"            = ["sb-1", "sb-2"]
+    "default_security_group_id" = "sg-1"
   }
 }
 
 ## These are the variables we have to pass in to use the module specified in the terragrunt configuration above
 ## Additionally, Terragrunt will fill in everything from the 'inputs' block in the `root-terragrunt.hcl` file
 inputs = {
-  vpc_id = try(dependency.vpc.outputs.vpc_id, "mock-vpc-id")
+  create_lb          = local.demicon_vars.create_lb
+  name               = local.demicon_vars.name
+  load_balancer_type = local.demicon_vars.load_balancer_type
+  vpc_id             = try(dependency.vpc.outputs.vpc_id, "mock-vpc-id")
+  lb_tags            = local.demicon_vars.lb_tags
+  subnets            = concat(dependency.vpc.outputs.public_subnets, local.demicon_vars.subnets)
+  security_groups    = concat([dependency.vpc.outputs.default_security_group_id], local.demicon_vars.security_groups)
 
-  tags = {
-    "TerraformModuleName" = "${local.module_name}"
-  }
+
+
+  tags = merge(local.demicon_vars.tags,
+    {
+      "TerraformModuleName" = "${local.module_name}"
+    }
+  )
 }

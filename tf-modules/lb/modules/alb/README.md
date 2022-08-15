@@ -46,7 +46,7 @@ No providers.
 
 | Name | Source | Version |
 |------|--------|---------|
-| this | git://github.com:terraform-aws-modules/terraform-aws-modules/alb/aws?v=7.0.0 | n/a |
+| this | github.com/terraform-aws-modules/terraform-aws-alb.git | v7.0.0 |
 
 ## Resources
 

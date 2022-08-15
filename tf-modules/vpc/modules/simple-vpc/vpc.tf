@@ -14,7 +14,7 @@ locals {
 
 ## pinne module version for avoiding sideefects
 module "this" {
-  source = "git@github.com:terraform-aws-modules/terraform-aws-vpc.git?ref=v3.14.2"
+  source = "github.com/terraform-aws-modules/terraform-aws-vpc.git?ref=v3.14.2"
 
   ## Conditional VPC creation
   create_vpc = var.create_vpc
@@ -29,9 +29,6 @@ module "this" {
   ## DNS
   enable_dns_hostnames = var.enable_dns_hostnames
   enable_dns_support   = var.enable_dns_support
-
-  ## VPC Flow Log forwarded to CloudWatch
-  enable_flow_log = var.enable_flow_log_cloudwatch
 
   ## Availability zones and subnets
   azs              = var.azs
